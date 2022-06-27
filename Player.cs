@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
     public GameObject gameOverText;
     public GameObject restartButton;
     public GameObject backButton;
+    public GameObject food;
+    public GameObject NextLevelBtn;
+    Spawner sp;
 
     private void Awake()
     {
@@ -26,6 +29,16 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sp = new Spawner();
+        print(PlayerPrefs.GetInt("virus") +"----"+"virus");
+        if (PlayerPrefs.GetInt("virus") > 0)
+            sp.dangerNum = PlayerPrefs.GetInt("virus");
+        else
+        {
+            sp.dangerNum = 4;
+            PlayerPrefs.SetInt("virus", 4);
+            print("at else");
+        }
     }
 
     // Update is called once per frame
@@ -123,6 +136,7 @@ public class Player : MonoBehaviour
                 winText.SetActive(true);
                 restartButton.SetActive(true);
                 backButton.SetActive(true);
+                NextLevelBtn.SetActive(true);
             }
         }
         else if (collision.gameObject.tag == "Danger")
@@ -146,6 +160,7 @@ public class Player : MonoBehaviour
 
     public void restartGame ()
     {
+        PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("Game");
         playGame();
     }
@@ -153,5 +168,12 @@ public class Player : MonoBehaviour
     public void goToMainMenu ()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void goToNextLevel()
+    {
+        PlayerPrefs.SetInt("virus", PlayerPrefs.GetInt("virus")+2);
+        SceneManager.LoadScene("Game");
+        playGame();
     }
 }
